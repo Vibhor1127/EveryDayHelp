@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>User Feedback</title>
+<!--    <th:block th:replace="~{/fragments/commonCSS::commonCSS1}"></th:block>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+          background-color: #f8f9fa;
+        }
+
+        .main-body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 90vh;
+          padding: 40px;
+        }
+
+        .form-box {
+          background-color: #ffffff;
+          padding: 30px;
+          border-radius: 12px;
+          box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+          width: 100%;
+          max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<!--<th:block th:replace="~{/fragments/user_header::userheaderFragment}"></th:block>-->
+
+<!-- Feedback Form -->
+<div class="main-body">
+    <div class="form-box">
+        <div class="text-center mb-4">
+            <h2 th:text="'Hi ' + ${userInfo.name} + ', we value your feedback'"></h2>
+        </div>
+        <form action="/userFeedback" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" th:value="${userInfo.name}" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" th:value="${userInfo.email}" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label for="remarks" class="form-label">Remarks</label>
+                <textarea class="form-control" id="remarks" name="remarks" rows="3" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="rating" class="form-label">Rating</label>
+                <select class="form-select" id="rating" name="rating" required>
+                    <option value="" disabled selected>Select rating</option>
+                    <option value="1">1 - Very Poor</option>
+                    <option value="2">2 - Poor</option>
+                    <option value="3">3 - Average</option>
+                    <option value="4">4 - Good</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer::footerFragment}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Welcome</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins & Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* CSS Variables for easy customization */
+        :root {
+            --primary-bg-gradient-start: #141e30; /* Dark Blue */
+            --primary-bg-gradient-mid1: #243b55;   /* Medium Blue */
+            --primary-bg-gradient-mid2: #4e54c8;   /* Purple Blue */
+            --primary-bg-gradient-end: #8f94fb;    /* Light Purple */
+
+            --hero-title-gradient-start: #ff6ec4; /* Pink */
+            --hero-title-gradient-end: #7873f5;   /* Purple */
+
+            --button-gradient-start: #00c6ff; /* Light Blue */
+            --button-gradient-end: #0072ff;   /* Dark Blue */
+
+            --text-color: #fff;
+            --shadow-light: rgba(255, 255, 255, 0.3);
+            --shadow-dark: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Global Background Animation */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(-45deg, var(--primary-bg-gradient-start), var(--primary-bg-gradient-mid1), var(--primary-bg-gradient-mid2), var(--primary-bg-gradient-end));
+            background-size: 400% 400%;
+            animation: bgMove 25s ease infinite alternate; /* Slower, smoother, alternating animation */
+            overflow: hidden; /* Prevent scrollbars */
+            position: relative; /* For pseudo-elements */
+        }
+
+        @keyframes bgMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Unique Background Overlay Effect (Subtle Grid/Mesh) */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0; /* Behind the main content */
+        }
+
+        body::before {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255,255,255,0.02) 0px,
+                rgba(255,255,255,0.02) 1px,
+                transparent 1px,
+                transparent 15px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                rgba(255,255,255,0.02) 0px,
+                rgba(255,255,255,0.02) 1px,
+                transparent 1px,
+                transparent 15px
+            );
+            animation: gridFlow 40s linear infinite; /* Slower grid flow */
+        }
+
+        body::after {
+            background: radial-gradient(
+                circle at 20% 80%, rgba(255,255,255,0.04) 0%, transparent 25%
+            ),
+            radial-gradient(
+                circle at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 25%
+            );
+            animation: subtleRadialPulse 20s ease-in-out infinite alternate; /* Subtle pulsing radial gradients */
+        }
+
+        @keyframes gridFlow {
+            from { background-position: 0 0; }
+            to { background-position: 150px 150px; } /* Smaller movement for subtlety */
+        }
+
+        @keyframes subtleRadialPulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.03); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+
+        /* Hero Section Styling */
+        .hero-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out forwards; /* Faster fade-in */
+            z-index: 1; /* Ensure content is above background effects */
+            position: relative; /* Needed for z-index */
+            padding: 2rem; /* Add padding for smaller screens */
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Title */
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800; /* Extra bold */
+            font-size: 4.5rem; /* Larger font size */
+            background: linear-gradient(90deg, var(--hero-title-gradient-start), var(--hero-title-gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px var(--shadow-light), 0 0 40px rgba(255, 255, 255, 0.1); /* Stronger glow */
+            animation: glowText 4s linear infinite alternate; /* Alternating glow */
+            margin-bottom: 1rem;
+        }
+
+        @keyframes glowText {
+            0% { text-shadow: 0 0 15px var(--hero-title-gradient-start), 0 0 30px var(--hero-title-gradient-end); }
+            50% { text-shadow: 0 0 25px var(--hero-title-gradient-end), 0 0 50px var(--hero-title-gradient-start); }
+            100% { text-shadow: 0 0 15px var(--hero-title-gradient-start), 0 0 30px var(--hero-title-gradient-end); }
+        }
+
+        /* Hero Subtitle */
+        .hero-subtitle {
+            font-size: 1.8rem; /* Larger subtitle */
+            margin-top: 0.5rem;
+            opacity: 0.9;
+            font-weight: 400;
+            text-shadow: 0 0 8px var(--shadow-dark);
+            animation: pulseSubtitle 3s ease-in-out infinite; /* Subtle pulse */
+        }
+
+        @keyframes pulseSubtitle {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        /* Animated Button */
+        .btn-animated {
+            margin-top: 3rem; /* More space above button */
+            padding: 1rem 3rem; /* Larger padding */
+            font-size: 1.3rem; /* Larger font size */
+            border: none;
+            border-radius: 30px; /* More rounded */
+            background: linear-gradient(90deg, var(--button-gradient-start), var(--button-gradient-end), var(--button-gradient-start)); /* Repeating gradient */
+            background-size: 200% 200%; /* For animation */
+            color: white;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            display: inline-flex; /* For icon alignment */
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease-in-out;
+            animation: buttonGradientShift 5s linear infinite; /* Continuous gradient shift */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Initial shadow */
+        }
+
+        @keyframes buttonGradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .btn-animated:hover {
+            transform: translateY(-8px) scale(1.05); /* More pronounced lift and scale */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.5); /* Stronger shadow and glow */
+            background-position: 100% 50%; /* Ensure full shift on hover */
+        }
+
+        .btn-animated i {
+            margin-left: 10px; /* Space between text and icon */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .btn-animated:hover i {
+            transform: translateX(5px); /* Icon slides slightly on hover */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.4rem;
+            }
+            .btn-animated {
+                font-size: 1.1rem;
+                padding: 0.8rem 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+                margin-bottom: 0.8rem;
+            }
+            .hero-subtitle {
+                font-size: 1.2rem;
+                margin-top: 0.3rem;
+            }
+            .btn-animated {
+                margin-top: 2rem;
+                padding: 0.7rem 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header (assuming /fragments/header::headerFragment is correctly defined) -->
+<div th:replace="~{/fragments/header::headerFragment}"></div>
+
+<div class="hero-section">
+    <h1 class="hero-title">Welcome to EveryDay Help <i class="fas fa-hands-helping"></i></h1>
+    <p th:text="${msg}" class="hero-subtitle">Your daily support system, simplified.</p>
+    <a th:href="@{/getstarted}" class="btn-animated">
+        Get Started <i class="fas fa-arrow-right"></i>
+    </a>
+</div>
+
+<!-- Footer (assuming /fragments/footer::footerFragment is correctly defined) -->
+<div th:replace="~{/fragments/footer::footerFragment}"></div>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

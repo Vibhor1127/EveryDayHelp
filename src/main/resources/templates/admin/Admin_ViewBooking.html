@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>View Bookings - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0e27;
+            min-height: 100vh;
+            padding: 2rem 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 255, 0, 0.1) 0%, transparent 50%);
+            animation: bgPulse 15s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow:
+                0 0 10px #00ffff,
+                0 0 20px #00ffff,
+                0 0 30px #00ffff,
+                0 0 40px #ff00ff,
+                0 0 70px #ff00ff;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow:
+                    0 0 10px #00ffff,
+                    0 0 20px #00ffff,
+                    0 0 30px #00ffff,
+                    0 0 40px #ff00ff,
+                    0 0 70px #ff00ff;
+            }
+            50% {
+                text-shadow:
+                    0 0 20px #00ffff,
+                    0 0 30px #00ffff,
+                    0 0 40px #00ffff,
+                    0 0 50px #ff00ff,
+                    0 0 80px #ff00ff;
+            }
+        }
+
+        .page-header p {
+            color: #00ffff;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Flash Message */
+        .alert-success {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 255, 0.2));
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            border-radius: 15px;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Booking Cards */
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .booking-card {
+            background: rgba(15, 20, 40, 0.8);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            animation: cardFadeIn 0.6s ease;
+        }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .booking-card::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00, #ff00ff);
+            background-size: 400% 400%;
+            border-radius: 20px;
+            z-index: -1;
+            animation: borderGlow 4s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .booking-card:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .booking-card:hover {
+            transform: translateY(-10px);
+            box-shadow:
+                0 0 30px rgba(255, 0, 255, 0.5),
+                0 0 60px rgba(0, 255, 255, 0.3);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .booking-id {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-pending {
+            background: rgba(255, 255, 0, 0.2);
+            border: 2px solid #ffff00;
+            color: #ffff00;
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        }
+
+        .status-activated {
+            background: rgba(0, 255, 0, 0.2);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .status-rejected {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .user-info {
+            background: rgba(0, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .user-info h5 {
+            color: #ff00ff;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px #ff00ff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin: 0.8rem 0;
+            color: #fff;
+        }
+
+        .info-item i {
+            width: 30px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            margin-right: 0.8rem;
+        }
+
+        .info-item strong {
+            color: #00ffff;
+            margin-right: 0.5rem;
+            min-width: 120px;
+        }
+
+        .booking-details {
+            margin: 1.5rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: rgba(255, 0, 255, 0.05);
+            border-left: 3px solid #ff00ff;
+            border-radius: 8px;
+        }
+
+        .detail-item .label {
+            color: #ffff00;
+            font-weight: 600;
+        }
+
+        .detail-item .value {
+            color: #fff;
+            text-align: right;
+        }
+
+        .admin-message-box {
+            background: rgba(255, 255, 0, 0.05);
+            border-left: 3px solid #ffff00;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .admin-message-box strong {
+            color: #ffff00;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-message-box p {
+            color: #fff;
+            margin: 0;
+        }
+
+        /* Action Forms */
+        .action-section {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: rgba(0, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .action-section h6 {
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px #00ffff;
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            color: #fff;
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+        }
+
+        .form-control:focus {
+            background: rgba(0, 0, 0, 0.7);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-label {
+            color: #00ffff;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label i {
+            margin-right: 0.5rem;
+        }
+
+        /* Action Buttons */
+        .btn-neon {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-neon::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-neon:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-activate {
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.3), rgba(0, 255, 255, 0.3));
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .btn-activate:hover {
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.8);
+            transform: translateY(-3px);
+            color: #00ff00;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(255, 0, 255, 0.3));
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .btn-reject:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+            transform: translateY(-3px);
+            color: #ff0000;
+        }
+
+        .btn-back {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3));
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            text-decoration: none;
+            border-radius: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.8);
+            transform: translateY(-3px);
+            color: #ff00ff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: rgba(15, 20, 40, 0.8);
+            border: 2px dashed rgba(0, 255, 255, 0.3);
+            border-radius: 20px;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: #00ffff;
+            text-shadow: 0 0 30px #00ffff;
+            margin-bottom: 2rem;
+        }
+
+        .empty-state h3 {
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .processed-status {
+            background: rgba(0, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .processed-status i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .processed-status.activated {
+            border-color: #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .processed-status.activated i {
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        .processed-status.rejected {
+            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        .processed-status.rejected i {
+            color: #ff0000;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        .processed-status strong {
+            color: #00ffff;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .bookings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-calendar-check me-3"></i>BOOKING REQUESTS
+        </h1>
+        <p>Manage and process user service bookings</p>
+    </div>
+
+    <!-- Flash Message -->
+    <div th:if="${msg}" class="alert alert-success text-center mb-4" th:text="${msg}"></div>
+
+    <!-- Back Button -->
+    <div class="text-center mb-4">
+        <a th:href="@{/admin/adminHome}" class="btn-back">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${bookings == null or bookings.size() == 0}">
+        <i class="fas fa-inbox"></i>
+        <h3>No Booking Requests</h3>
+        <p>There are no booking requests at the moment.</p>
+    </div>
+
+    <!-- Bookings Grid -->
+    <div class="bookings-grid" th:if="${bookings != null and bookings.size() > 0}">
+        <div class="booking-card" th:each="booking : ${bookings}">
+            <!-- Booking Header -->
+            <div class="booking-header">
+                <div class="booking-id">
+                    <i class="fas fa-hashtag"></i>
+                    <span th:text="${booking.id}">001</span>
+                </div>
+                <div class="status-badge"
+                     th:classappend="${#strings.toLowerCase(booking.status)}">
+                    <i class="fas fa-circle me-2"></i>
+                    <span th:text="${booking.status}">Pending</span>
+                </div>
+            </div>
+
+            <!-- User Info -->
+            <div class="user-info">
+                <h5><i class="fas fa-user me-2"></i>User Information</h5>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <strong>Email:</strong>
+                    <span th:text="${booking.email}">user@example.com</span>
+                </div>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="booking-details">
+                <div class="detail-item">
+                    <span class="label"><i class="fas fa-cog me-2"></i>Service Type</span>
+                    <span class="value" th:text="${booking.serviceType}">House Cleaning</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label"><i class="fas fa-clock me-2"></i>Duration</span>
+                    <span class="value" th:text="${booking.duration}">LTS</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label"><i class="fas fa-rupee-sign me-2"></i>Amount</span>
+                    <span class="value">₹<span th:text="${booking.amount}">2500</span></span>
+                </div>
+                <div class="detail-item">
+                    <span class="label"><i class="fas fa-calendar me-2"></i>Booking Date</span>
+                    <span class="value" th:text="${#temporals.format(booking.date, 'dd MMM yyyy, hh:mm a')}">01 Jan 2024</span>
+                </div>
+            </div>
+
+            <!-- Admin Message Display -->
+            <div class="admin-message-box" th:if="${booking.adminMessage != null and !#strings.isEmpty(booking.adminMessage)}">
+                <strong><i class="fas fa-comment me-2"></i>Admin Message</strong>
+                <p th:text="${booking.adminMessage}">Admin message here</p>
+            </div>
+
+            <!-- Time Slot Display -->
+            <div class="admin-message-box" th:if="${booking.timeSlot != null and !#strings.isEmpty(booking.timeSlot)}"
+                 style="border-left-color: #00ffff; background: rgba(0, 255, 255, 0.05);">
+                <strong style="color: #00ffff;"><i class="fas fa-business-time me-2"></i>Assigned Time Slot</strong>
+                <p th:text="${booking.timeSlot}">Mon-Fri, 9AM-5PM</p>
+            </div>
+
+            <!-- Action Section for Pending Bookings -->
+            <div class="action-section" th:if="${booking.status == 'Pending'}">
+                <h6><i class="fas fa-tasks me-2"></i>Process Booking</h6>
+
+                <!-- Approve Form -->
+                <form th:action="@{/admin/booking/approve}" method="post" class="mb-3">
+                    <input type="hidden" name="id" th:value="${booking.id}">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-clock"></i>Time Slot *
+                            </label>
+                            <input type="text" class="form-control" name="timeSlot"
+                                   placeholder="e.g., Mon-Fri, 9AM-5PM" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-comment"></i>Message (Optional)
+                            </label>
+                            <input type="text" class="form-control" name="adminMessage"
+                                   placeholder="Additional message">
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn-neon btn-activate">
+                            <i class="fas fa-check-circle me-2"></i>Activate Booking
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Reject Form -->
+                <form th:action="@{/admin/booking/reject}" method="post" class="border-top pt-3"
+                      style="border-color: rgba(255, 0, 0, 0.3) !important;">
+                    <input type="hidden" name="id" th:value="${booking.id}">
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label" style="color: #ff0000;">
+                                <i class="fas fa-comment"></i>Rejection Reason (Optional)
+                            </label>
+                            <input type="text" class="form-control" name="adminMessage"
+                                   placeholder="Reason for rejection"
+                                   style="border-color: rgba(255, 0, 0, 0.3);">
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn-neon btn-reject">
+                            <i class="fas fa-times-circle me-2"></i>Reject Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Status Display for Processed Bookings -->
+            <div th:if="${booking.status != 'Pending'}"
+                 th:class="${'processed-status ' + #strings.toLowerCase(booking.status)}">
+                <div th:if="${booking.status == 'Activated'}">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <strong style="color: #00ff00;">BOOKING ACTIVATED</strong>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem;">This booking has been successfully activated</p>
+                    </div>
+                </div>
+                <div th:if="${booking.status == 'Rejected'}">
+                    <i class="fas fa-times-circle"></i>
+                    <div>
+                        <strong style="color: #ff0000;">BOOKING REJECTED</strong>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem;">This booking has been rejected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

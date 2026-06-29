@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Users - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #141e30, #243b55, #4e54c8, #8f94fb);
+            background-size: 400% 400%;
+            animation: bgAnim 18s ease infinite;
+            min-height: 100vh;
+            padding-top: 72px;
+        }
+
+        @keyframes bgAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Admin Navbar - Original Style */
+        .navbar {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.4) !important;
+            margin-bottom: 0;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #fff !important;
+        }
+
+        .navbar-brand span {
+            color: #ff8a00;
+        }
+
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            color: #fff !important;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff8a00, #9b00ff);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-logout {
+            background: linear-gradient(90deg, #ff4d4d, #ff0066);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            transform: scale(1.1);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 1.5rem;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .stats-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* User Cards Grid */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .user-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .user-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .user-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            margin-right: 1rem;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #f0f0f0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin: 0 auto 1.5rem;
+            display: block;
+        }
+
+        .user-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .user-info-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .user-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info-item i {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .user-info-item .label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 80px;
+        }
+
+        .user-info-item .value {
+            color: #333;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-edit {
+            flex: 1;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.5);
+            color: white;
+        }
+
+        .btn-delete {
+            flex: 1;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.5);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: white;
+            padding: 5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .admin-navbar .nav-link {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Admin Navbar - Original Style -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/admin/adminHome}">
+                Admin&nbsp;<span>Panel</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/addEmployee}">Add&nbsp;Employee</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/addNotice}">Add&nbsp;Notices</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allUsers}">View&nbsp;Users</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allEmployees}">View&nbsp;Employees</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allNotices}">View&nbsp;Notices</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allContacts}">View&nbsp;Contacts</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/view-bookings}">View&nbsp;Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/view-feedback}">View&nbsp;Feedback</a></li>
+                </ul>
+
+                <form th:action="@{/admin/adminLogout}" method="post" class="d-flex">
+                    <button type="submit" class="btn btn-logout">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-users me-3"></i>All Registered Users
+        </h1>
+        <p>Manage and monitor all platform users</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-card text-center">
+                <h3 th:text="${#lists.size(users)}">0</h3>
+                <p><i class="fas fa-users me-2"></i>Total Users Registered</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Grid -->
+    <div class="users-grid" th:if="${!#lists.isEmpty(users)}">
+        <div class="user-card" th:each="u, idx : ${users}">
+            <div class="user-card-header">
+                <div class="user-number" th:text="${idx.index + 1}">1</div>
+            </div>
+
+            <img th:src="@{'/' + ${u.pic}}" alt="User" class="user-image" />
+
+            <div class="user-info">
+                <div class="user-info-item">
+                    <i class="fas fa-user"></i>
+                    <div class="label">Name</div>
+                    <div class="value" th:text="${u.name}">John Doe</div>
+                </div>
+
+                <div class="user-info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="label">Email</div>
+                    <div class="value" th:text="${u.email}">john@example.com</div>
+                </div>
+
+                <div class="user-info-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="label">Phone</div>
+                    <div class="value" th:text="${u.phone}">9876543210</div>
+                </div>
+
+                <div class="user-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="label">Address</div>
+                    <div class="value" th:text="${u.address}">123 Street, City, Country</div>
+                </div>
+            </div>
+
+            <div class="user-actions">
+                <a th:href="@{'/admin/editUser?email=' + ${u.email}}"
+                   class="btn btn-edit"
+                   onclick="return confirm('Edit this user?');">
+                    <i class="fas fa-edit me-2"></i>Edit User
+                </a>
+                <a th:href="@{'/admin/deleteUser?email=' + ${u.email}}"
+                   class="btn btn-delete"
+                   onclick="return confirm('Delete this user permanently?');">
+                    <i class="fas fa-trash me-2"></i>Delete
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${#lists.isEmpty(users)}">
+        <i class="fas fa-users-slash"></i>
+        <h3>No Users Found</h3>
+        <p>There are no registered users in the system yet.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

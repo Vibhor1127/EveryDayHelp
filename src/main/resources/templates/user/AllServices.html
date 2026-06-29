@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Services - EveryDayHelp</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts: Poppins & Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    /* CSS Variables for consistent theming */
+    :root {
+        --bg-dark-sky: #1a1a2e; /* Very dark blue/purple for sky */
+        --lightning-color: rgba(255, 255, 255, 0.8); /* White lightning */
+        --lightning-glow: rgba(255, 255, 255, 0.6); /* Subtle glow around lightning */
+
+        --card-glass-bg: rgba(255, 255, 255, 0.08);
+        --card-glass-border: rgba(255, 255, 255, 0.15);
+        --text-color: #fff;
+        --shadow-color: rgba(0, 0, 0, 0.5);
+
+        --input-bg: rgba(255, 255, 255, 0.1);
+        --input-border: rgba(255, 255, 255, 0.3);
+        --input-focus-glow: #00f2ff;
+
+        --button-gradient-start: #ff6ec4; /* Pink */
+        --button-gradient-mid1: #7873f5;   /* Purple */
+        --button-gradient-mid2: #00c6ff;   /* Light Blue */
+        --button-gradient-end: #0072ff;    /* Dark Blue */
+    }
+
+    /* Global Body & Background Animation */
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--bg-dark-sky); /* Dark sky base */
+        overflow: hidden; /* Crucial for background effects */
+        position: relative; /* For pseudo-elements */
+    }
+
+    /* Lightning Background Effect */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle at 50% 50%, rgba(0,0,0,0.5) 0%, transparent 70%); /* Dark overlay */
+        z-index: 0;
+        pointer-events: none;
+        animation: skyDarken 15s ease-in-out infinite alternate;
+    }
+
+    @keyframes skyDarken {
+        0% { background-color: #1a1a2e; }
+        50% { background-color: #0d0d1a; } /* Deeper dark */
+        100% { background-color: #1a1a2e; }
+    }
+
+    .lightning-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0; /* Behind content */
+        pointer-events: none;
+    }
+
+    .lightning-bolt {
+        position: absolute;
+        background: var(--lightning-color);
+        box-shadow: 0 0 20px var(--lightning-glow), 0 0 40px var(--lightning-glow);
+        opacity: 0;
+        animation: lightningFlash 3s infinite; /* Each bolt flashes */
+    }
+
+    /* Individual bolt animations and positions */
+    .bolt-1 {
+        width: 3px; height: 150px;
+        top: 10%; left: 20%;
+        transform: rotate(30deg);
+        animation-delay: 0s;
+        animation-duration: 4s;
+    }
+    .bolt-2 {
+        width: 4px; height: 200px;
+        top: 5%; left: 70%;
+        transform: rotate(-45deg);
+        animation-delay: 1s;
+        animation-duration: 3.5s;
+    }
+    .bolt-3 {
+        width: 2px; height: 100px;
+        top: 30%; left: 45%;
+        transform: rotate(15deg);
+        animation-delay: 2s;
+        animation-duration: 4.5s;
+    }
+    .bolt-4 {
+        width: 5px; height: 250px;
+        top: 0%; left: 10%;
+        transform: rotate(50deg);
+        animation-delay: 0.5s;
+        animation-duration: 5s;
+    }
+    .bolt-5 {
+        width: 3px; height: 180px;
+        top: 20%; left: 85%;
+        transform: rotate(-20deg);
+        animation-delay: 1.5s;
+        animation-duration: 4s;
+    }
+
+
+    @keyframes lightningFlash {
+        0%, 100% { opacity: 0; transform: scaleY(0); }
+        10%, 12% { opacity: 1; transform: scaleY(1); } /* Quick flash */
+        15% { opacity: 0; transform: scaleY(0); }
+    }
+
+
+    /* Main Container for Cards */
+    .container {
+        padding: 2rem 1rem;
+        max-width: 900px; /* Max width for the card layout */
+        width: 100%;
+        z-index: 1; /* Ensure cards are above background */
+        position: relative;
+    }
+
+    /* Page Title */
+    h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 3.5rem;
+        background: linear-gradient(90deg, var(--button-gradient-start), var(--button-gradient-end));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        animation: textGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes textGlow {
+        from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px var(--button-gradient-start); }
+        to { text-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px var(--button-gradient-end); }
+    }
+
+    /* Card Styling */
+    .card-glass {
+        background: var(--card-glass-bg);
+        border: 1px solid var(--card-glass-border);
+        border-radius: 20px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 15px 30px var(--shadow-color);
+        padding: 2.5rem;
+        text-align: center;
+        opacity: 0; /* Start hidden for pop-up animation */
+        transform: translateY(50px) scale(0.9);
+        animation: popUp 0.8s ease-out forwards;
+        margin-bottom: 2rem; /* Space between cards */
+    }
+
+    /* Staggered Pop-up Animation */
+    .card-glass:nth-child(1) { animation-delay: 0.2s; }
+    .card-glass:nth-child(2) { animation-delay: 0.5s; }
+    .card-glass:nth-child(3) { animation-delay: 0.8s; } /* For the submit button */
+    .card-glass.info-card { animation-delay: 0.2s; /* Reset delay for info card when shown */ }
+
+
+    @keyframes popUp {
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Card Titles */
+    .card-glass h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(90deg, var(--button-gradient-mid1), var(--button-gradient-mid2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Form Controls */
+    .form-select, .form-control {
+        background: var(--input-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 10px;
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease-in-out;
+        appearance: none; /* Remove default select arrow */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+    }
+
+    .form-select option {
+        background: #2c5364; /* Darker background for dropdown options */
+        color: var(--text-color);
+    }
+
+    .form-select:focus, .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--input-focus-glow);
+        box-shadow: 0 0 0 0.25rem rgba(0, 242, 255, 0.25);
+        transform: translateY(-2px);
+    }
+
+    /* Radio Buttons */
+    .form-check-input {
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        transition: all 0.3s ease;
+    }
+    .form-check-input:checked {
+        background-color: var(--button-gradient-end);
+        border-color: var(--button-gradient-end);
+        box-shadow: 0 0 0 0.25rem rgba(0, 114, 255, 0.25);
+    }
+    .form-check-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        background: linear-gradient(90deg, #ff8a00, #e52e71); /* Orange-Pink gradient */
+        background-size: 200% 200%;
+        color: white;
+        padding: 0.9rem 2.5rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        transition: all 0.4s ease-in-out;
+        animation: btnPulse 5s linear infinite alternate;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        margin-top: 1.5rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    @keyframes btnPulse {
+        0% { background-position: 0% 50%; transform: scale(1); }
+        50% { background-position: 100% 50%; transform: scale(1.02); }
+        100% { background-position: 0% 50%; transform: scale(1); }
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-5px) scale(1.03);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
+        opacity: 0.9;
+    }
+
+    /* Info Card (Initially Hidden) */
+    .info-card {
+        display: none; /* Hidden by default */
+        animation: fadeInScale 0.8s ease-out forwards; /* Animation when shown */
+        margin-top: 2rem;
+    }
+
+    @keyframes fadeInScale {
+        from { opacity: 0; transform: translateY(30px) scale(0.9); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .info-card p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    .info-card strong {
+        color: var(--button-gradient-start);
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Book Now Button */
+    .btn-book-now {
+        background: linear-gradient(90deg, #28a745, #218838); /* Green gradient */
+        color: white;
+        padding: 0.9rem 2.5rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-book-now:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        opacity: 0.9;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        .card-glass {
+            padding: 1.5rem;
+        }
+        .card-glass h3 {
+            font-size: 1.6rem;
+        }
+        .btn-submit, .btn-book-now {
+            font-size: 1rem;
+            padding: 0.7rem 1.8rem;
+        }
+        /* Stack cards vertically on smaller screens */
+        .card-row .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            padding: 0.5rem; /* Even smaller padding on very small screens */
+        }
+        h1 {
+            font-size: 2rem;
+        }
+        .card-glass {
+            margin-bottom: 1.5rem;
+            padding: 1rem; /* Even more reduced padding for very small screens */
+        }
+    }
+  </style>
+</head>
+<body>
+<!-- Lightning Background Container -->
+<div class="lightning-container">
+  <div class="lightning-bolt bolt-1"></div>
+  <div class="lightning-bolt bolt-2"></div>
+  <div class="lightning-bolt bolt-3"></div>
+  <div class="lightning-bolt bolt-4"></div>
+  <div class="lightning-bolt bolt-5"></div>
+</div>
+
+<div class="container">
+  <h1>Explore Our Services <i class="fas fa-handshake"></i></h1>
+
+  <form id="serviceForm">
+    <div class="row g-4 justify-content-center card-row">
+      <!-- Card 1: Service Type -->
+      <div class="col-md-6">
+        <div class="card-glass" id="card1">
+          <h3>Select Service Type <i class="fas fa-tools"></i></h3>
+          <div class="mb-3">
+            <label for="serviceType" class="form-label visually-hidden">Service Type</label>
+            <select class="form-select form-select-lg w-100 mx-auto" id="serviceType" name="serviceType" required>
+              <option value="">-- Choose Service --</option>
+              <option value="Maid">Maid</option>
+              <option value="Driver">Driver</option>
+              <option value="Plumber">Plumber</option>
+              <option value="Electrician">Electrician</option>
+              <option value="Gardener">Gardener</option>
+              <option value="Chef">Chef</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Service Duration -->
+      <div class="col-md-6">
+        <div class="card-glass" id="card2">
+          <h3>Select Service Duration <i class="fas fa-clock"></i></h3>
+          <div class="d-flex justify-content-center gap-4">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="serviceDuration" id="lts" value="LTS" required>
+              <label class="form-check-label" for="lts">
+                LTS (Long Term Service)
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="serviceDuration" id="sts" value="STS">
+              <label class="form-check-label" for="sts">
+                STS (Short Term Service)
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button (outside the row but still part of the form) -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-submit" id="submitBtn">
+        Show Service Details <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </form>
+
+  <!-- Card 3: Service Info (Initially Hidden) -->
+  <div class="card-glass info-card" id="card3">
+    <h3>Service Information <i class="fas fa-info-circle"></i></h3>
+    <p><strong>Charges:</strong> <span id="serviceCharges">₹500/day</span></p>
+    <p><strong>Description:</strong> <span id="serviceDescription">Our skilled professionals provide top-notch service tailored to your needs.</span></p>
+    <a href="/Booknow" class="btn btn-book-now">
+      Book Now <i class="fas fa-calendar-check"></i>
+    </a>
+  </div>
+</div>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+      const serviceForm = document.getElementById('serviceForm');
+      const card3 = document.getElementById('card3');
+      const serviceCharges = document.getElementById('serviceCharges');
+      const serviceDescription = document.getElementById('serviceDescription');
+
+      serviceForm.addEventListener('submit', (event) => {
+          event.preventDefault(); // Prevent default form submission
+
+          // Simulate fetching data based on selection
+          const selectedServiceType = document.getElementById('serviceType').value;
+          const selectedServiceDuration = document.querySelector('input[name="serviceDuration"]:checked');
+
+          if (selectedServiceType && selectedServiceDuration) {
+              // Placeholder logic for charges and description
+              let charges = '';
+              let description = '';
+
+              if (selectedServiceType === 'Maid') {
+                  charges = selectedServiceDuration.value === 'LTS' ? '₹7,500/month' : '₹1,000/day';
+                  description = 'Professional and reliable maid services for your home.';
+              } else if (selectedServiceType === 'Driver') {
+                  charges = selectedServiceDuration.value === 'LTS' ? '₹8,000/month' : '₹1,200/day';
+                  description = 'Experienced drivers for safe and comfortable travel.';
+              } else if (selectedServiceType === 'Plumber') {
+                  charges = '₹500 - ₹2,000/visit';
+                  description = 'Expert plumbing solutions for all your needs.';
+              } else if (selectedServiceType === 'Electrician') {
+                  charges = '₹600 - ₹2,500/visit';
+                  description = 'Certified electricians for safe and efficient electrical work.';
+              } else if (selectedServiceType === 'Gardener') {
+                  charges = selectedServiceDuration.value === 'LTS' ? '₹5,000/month' : '₹800/day';
+                  description = 'Skilled gardeners to keep your green spaces beautiful.';
+              } else if (selectedServiceType === 'Chef') {
+                  charges = selectedServiceDuration.value === 'LTS' ? '₹9,000/month' : '₹1,500/meal';
+                  description = 'Personal chefs offering culinary delights for any occasion.';
+              } else {
+                  charges = 'N/A';
+                  description = 'Please select a service to see details.';
+              }
+
+              serviceCharges.textContent = charges;
+              serviceDescription.textContent = description;
+
+              // Show and animate Card 3
+              card3.style.display = 'block';
+              card3.classList.add('show'); // Trigger animation
+          } else {
+              // Optionally, show an alert or message if fields are not selected
+              alert('Please select both Service Type and Service Duration.');
+          }
+      });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking Service</title>
+<!--  <th:block th:replace="~{/fragments/commonCSS::commonCSS1}"></th:block>-->
+  <style>
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensures the body takes full viewport height */
+        margin: 0;
+        background-color: #f4f4f4; /* A light background for the page */
+    }
+
+    .main-content {
+        flex-grow: 1; /* Allows this content to expand and push the footer down */
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        padding: 20px; /* Add some padding around the card */
+    }
+
+    .card-box {
+        background-color: #ffffff; /* White background for the card */
+        padding: 30px;
+        border-radius: 10px; /* Slightly more rounded corners */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+        max-width: 550px; /* Adjust max-width as needed */
+        width: 100%; /* Make it responsive */
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+        text-align: left; /* Align text within the card */
+    }
+
+    .card-box h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 2em; /* Larger heading */
+        font-weight: 600;
+    }
+
+    .card-box label {
+        display: block; /* Makes labels take full width */
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+        font-size: 1.1em;
+    }
+
+    .card-box select,
+    .card-box input[type="email"],
+    .card-box textarea {
+        width: 100%; /* Take full width of parent (minus padding due to box-sizing) */
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box; /* Crucial for responsive width */
+        font-size: 1em;
+    }
+
+    .card-box textarea {
+        resize: vertical; /* Allow vertical resizing */
+        min-height: 100px;
+    }
+
+    .card-box button {
+        width: 100%;
+        padding: 14px;
+        background-color: #007bff; /* Primary blue color */
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .card-box button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        transform: translateY(-2px); /* Slight lift effect */
+    }
+
+    /* Styling for the footer - ensure this matches your actual footer fragment */
+    .footer {
+        background-color: #333; /* Dark background */
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        width: 100%;
+        font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+<!--<th:block th:replace="~{/fragments/user_header::userheaderFragment}"></th:block>-->
+
+<div class="main-content">
+  <div class="card-box">
+    <h2>Booking Service Form</h2>
+    <form th:action="@{/booking}" th:object="${booking}" method="post">
+      <label for="serviceType">Service Type</label>
+      <select id="serviceType" th:field="*{serviceType}">
+        <option value="">--Select--</option>
+        <option value="LTS">LTS</option>
+        <option value="STS">STS</option>
+      </select>
+
+      <label for="employeeType">Employee Type</label>
+      <select id="employeeType" th:field="*{employeeType}">
+        <option value="">--Select Type--</option>
+        <option value="Chef">Chef</option>
+        <option value="Gardener">Gardener</option>
+        <option value="Cleaner">Cleaner</option>
+        <option value="Electrician">Electrician</option>
+        <option value="Plumber">Plumber</option>
+      </select>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" th:field="*{email}" placeholder="your@email.com" required/>
+
+      <label for="userMessage">Message</label>
+      <textarea id="userMessage" th:field="*{userMessage}" placeholder="I need a maid for two weeks..."></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<div th:replace="~{/fragments/footer::footerFragment}"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

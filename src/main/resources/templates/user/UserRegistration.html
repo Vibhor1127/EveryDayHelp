@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Register</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins & Montserrat (for headings) and Quicksand (for body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@300;400;600;700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* CSS Variables for easy customization */
+        :root {
+            /* Updated Background Gradient Colors */
+            --primary-bg-gradient-start: #4facfe; /* Light Blue */
+            --primary-bg-gradient-mid1: #00f2fe;   /* Cyan */
+            --primary-bg-gradient-mid2: #43e97b;   /* Green */
+            --primary-bg-gradient-end: #3bb2b8;    /* Teal */
+
+            --card-glass-bg: rgba(255, 255, 255, 0.08);
+            --card-glass-border: rgba(255, 255, 255, 0.15);
+            --text-color: #fff;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --input-border: rgba(255, 255, 255, 0.3);
+            --input-focus-glow: #00f2ff;
+
+            --button-gradient-start: #ff6ec4; /* Pink */
+            --button-gradient-mid1: #7873f5;   /* Purple */
+            --button-gradient-mid2: #00c6ff;   /* Light Blue */
+            --button-gradient-end: #0072ff;    /* Dark Blue */
+
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+
+        /* Global Background Animation */
+        body {
+            margin: 0;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg-gradient-start), var(--primary-bg-gradient-mid1), var(--primary-bg-gradient-mid2), var(--primary-bg-gradient-end));
+            background-size: 400% 400%;
+            animation: newGradientMove 20s ease infinite alternate;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-color);
+            overflow: hidden; /* Prevent scrollbars */
+            position: relative; /* Needed for pseudo-elements */
+        }
+
+        /* New Background Animation Keyframes */
+        @keyframes newGradientMove {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* Unique Background Overlay Effect */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0; /* Behind the main content */
+        }
+
+        body::before {
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255,255,255,0.03) 0px,
+                rgba(255,255,255,0.03) 2px,
+                transparent 2px,
+                transparent 20px
+            ),
+            repeating-linear-gradient(
+                -45deg,
+                rgba(255,255,255,0.03) 0px,
+                rgba(255,255,255,0.03) 2px,
+                transparent 2px,
+                transparent 20px
+            );
+            animation: gridFlow 30s linear infinite;
+        }
+
+        body::after {
+            background: radial-gradient(
+                circle at 10% 20%, rgba(255,255,255,0.05) 0%, transparent 20%
+            ),
+            radial-gradient(
+                circle at 90% 80%, rgba(255,255,255,0.05) 0%, transparent 20%
+            );
+            animation: subtlePulse 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes gridFlow {
+            from { background-position: 0 0; }
+            to { background-position: 200px 200px; }
+        }
+
+        @keyframes subtlePulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+
+        /* Main Content Area */
+        .main-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            padding: 1rem; /* Adjusted padding for smaller screens */
+            z-index: 2; /* Ensure content is above background effects */
+            position: relative; /* Needed for z-index to work */
+        }
+
+        /* Page Title */
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--text-color);
+            text-shadow: 0 0 10px var(--shadow-color);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 3rem; /* Larger title */
+            background: linear-gradient(90deg, var(--button-gradient-start), var(--button-gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 3s ease-in-out infinite alternate;
+        }
+
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 2.2rem; /* Smaller title on mobile */
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px var(--button-gradient-start); }
+            to { text-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px var(--button-gradient-end); }
+        }
+
+        /* Card Styling (Glassmorphism + Animation) */
+        .card-glass {
+            background: var(--card-glass-bg);
+            border-radius: 20px; /* More rounded */
+            backdrop-filter: blur(18px); /* Stronger blur */
+            box-shadow: 0 15px 35px var(--shadow-color);
+            color: var(--text-color);
+            animation: fadeInUp 1s ease-out forwards; /* Initial pop-in animation */
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(50px) scale(0.95); /* Start lower and slightly smaller */
+            width: 100%;
+            max-width: 550px; /* Wider card */
+            padding: 3rem; /* More padding */
+        }
+
+        @media (max-width: 768px) {
+            .card-glass {
+                padding: 1.5rem; /* Reduced padding on mobile */
+                margin: 0 1rem; /* Add horizontal margin to prevent touching edges */
+            }
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Form Labels */
+        .form-label {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Form Inputs */
+        .form-control {
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+            border-radius: 12px; /* More rounded inputs */
+            padding: 0.8rem 1.2rem; /* More padding */
+            transition: all 0.3s ease-in-out;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-control:focus {
+            border-color: var(--input-focus-glow);
+            box-shadow: 0 0 0 0.25rem rgba(0, 242, 255, 0.25); /* Focus glow */
+            background: rgba(255, 255, 255, 0.15);
+            outline: none;
+            transform: translateY(-3px); /* Subtle lift on focus */
+        }
+
+        /* Textarea specific */
+        textarea.form-control {
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 80px; /* Minimum height for textarea */
+        }
+
+        /* Custom Button */
+        .btn-gradient {
+            background: linear-gradient(270deg, var(--button-gradient-start), var(--button-gradient-mid1), var(--button-gradient-mid2), var(--button-gradient-end), var(--button-gradient-start));
+            background-size: 400% 400%;
+            color: #fff;
+            font-weight: 700; /* Bolder text */
+            letter-spacing: 0.8px; /* More prominent letter spacing */
+            border: none;
+            padding: 1rem 1.5rem; /* More padding */
+            border-radius: 12px; /* More rounded button */
+            transition: all 0.4s ease-in-out;
+            animation: pulse 6s linear infinite; /* Slower pulse animation */
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        @keyframes pulse {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
+            transition: all 0.5s ease-in-out;
+            z-index: -1;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-5px) scale(1.02); /* Lift and slight scale on hover */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-gradient:hover::before {
+            left: 100%;
+        }
+
+        .btn-gradient:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Message Alerts */
+        .alert-success {
+            background-color: rgba(40, 167, 69, 0.2); /* Semi-transparent success */
+            color: var(--success-color);
+            border-color: var(--success-color);
+            font-weight: 600;
+            text-align: center;
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .alert-danger {
+            background-color: rgba(220, 53, 69, 0.2); /* Semi-transparent danger */
+            color: var(--error-color);
+            border-color: var(--error-color);
+            font-weight: 600;
+            text-align: center;
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Font Awesome Icons in inputs */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem; /* Space between input groups */
+        }
+        .input-group .form-control {
+            padding-left: 3rem; /* Space for icon */
+        }
+        .input-group .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            z-index: 2; /* Ensure icon is above input */
+        }
+
+        /* Password Generator Button */
+        .password-gen-btn {
+            background: linear-gradient(90deg, #6dd5ed, #2193b0); /* Blue-ish gradient */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 0.5rem; /* Space from input */
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .password-gen-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            opacity: 0.9;
+        }
+
+        .password-suggestion-box {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1rem;
+            color: var(--text-color);
+            word-break: break-all; /* Ensure long passwords wrap */
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+
+        .password-suggestion-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .password-suggestion-box .copy-icon {
+            cursor: pointer;
+            margin-left: 10px;
+            color: #00f2ff; /* Highlight copy icon */
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .password-suggestion-box .copy-icon:hover {
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .password-suggestion-box .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #00f2ff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+<!-- New Background Overlay Elements -->
+<!-- These elements create the unique flowing grid/mesh effect -->
+<div class="background-overlay"></div>
+
+<!-- Header (if you have one, make sure it's compatible with the new styling) -->
+<!-- <div th:replace="~{/fragments/header::headerFragment}"></div> -->
+
+<!-- Main Content -->
+<div class="container main-body">
+    <h2>Create Your Account <i class="fas fa-user-plus"></i></h2>
+
+    <div class="card-glass p-4 mx-auto">
+        <h4 th:if="${msg}" th:classappend="${msg.contains('Successfully') ? 'alert-success' : 'alert-danger'}" th:text="${msg}"></h4>
+
+        <form action="/registerUser" enctype="multipart/form-data" method="post">
+            <div class="input-group mb-3">
+                <i class="input-icon fas fa-envelope"></i>
+                <input type="email" name="email" class="form-control" placeholder="example@mail.com" required />
+            </div>
+
+            <div class="input-group mb-3">
+                <i class="input-icon fas fa-lock"></i>
+                <input type="password" name="password" class="form-control" id="passwordInput" placeholder="Enter a strong password" required />
+                <button type="button" class="password-gen-btn" id="generatePasswordBtn">
+                    ✨ Generate
+                </button>
+            </div>
+            <div id="passwordSuggestion" class="password-suggestion-box" style="display: none;">
+                <span id="generatedPasswordText"></span>
+                <span id="loadingSpinner" class="loading-spinner" style="display: none;"></span>
+                <i class="fas fa-copy copy-icon" id="copyPasswordBtn" title="Copy to clipboard"></i>
+            </div>
+
+
+            <div class="input-group mb-3">
+                <i class="input-icon fas fa-user"></i>
+                <input type="text" name="name" class="form-control" placeholder="Full Name" required />
+            </div>
+
+            <div class="input-group mb-3">
+                <i class="input-icon fas fa-phone"></i>
+                <input type="text" name="phone" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10}" title="Please enter a 10-digit phone number"/>
+            </div>
+
+            <div class="input-group mb-3">
+                <i class="input-icon fas fa-address-book"></i>
+                <textarea name="address" rows="2" class="form-control" placeholder="Your residential address" required></textarea>
+            </div>
+
+            <div class="mb-4"> <!-- Increased margin-bottom for file input -->
+                <label for="pic" class="form-label"><i class="fas fa-image"></i> Profile Picture </label>
+                <input id="pic" type="file" name="profilepic" class="form-control" />
+            </div>
+
+            <button class="btn btn-gradient w-100">Register</button>
+        </form>
+        <div class="text-center mt-3">
+            <a th:href="@{/user/userLogin}" class="btn btn-link text-white-50">Already have an account? Login here!</a>
+        </div>
+    </div>
+</div>
+
+<!-- Footer (if you have one, make sure it's compatible) -->
+<!-- <div th:replace="~{/fragments/footer::footerFragment}"></div> -->
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const generatePasswordBtn = document.getElementById('generatePasswordBtn');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordSuggestionBox = document.getElementById('passwordSuggestion');
+        const generatedPasswordText = document.getElementById('generatedPasswordText');
+        const copyPasswordBtn = document.getElementById('copyPasswordBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        generatePasswordBtn.addEventListener('click', async () => {
+            passwordSuggestionBox.style.display = 'flex';
+            passwordSuggestionBox.classList.remove('show');
+            generatedPasswordText.textContent = '';
+            loadingSpinner.style.display = 'block';
+            copyPasswordBtn.style.display = 'none'; // Hide copy button during loading
+
+            const prompt = "Generate a strong, random password that is at least 12 characters long, includes uppercase and lowercase letters, numbers, and special characters. Do not include any introductory or concluding text, just the password itself.";
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+
+            const apiKey = ""; // Canvas will automatically provide the API key at runtime.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const generatedPass = result.candidates[0].content.parts[0].text.trim();
+                    generatedPasswordText.textContent = generatedPass;
+                    passwordInput.value = generatedPass; // Auto-fill the password input
+                    copyPasswordBtn.style.display = 'inline-block'; // Show copy button
+                    passwordSuggestionBox.classList.add('show'); // Animate in
+                } else {
+                    generatedPasswordText.textContent = "Error generating password. Please try again.";
+                    console.error("Gemini API response structure unexpected:", result);
+                }
+            } catch (error) {
+                generatedPasswordText.textContent = "Failed to generate password.";
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        copyPasswordBtn.addEventListener('click', () => {
+            const textToCopy = generatedPasswordText.textContent;
+            if (textToCopy) {
+                // Using document.execCommand('copy') as navigator.clipboard.writeText()
+                // might not work in some iframe environments.
+                const tempInput = document.createElement('textarea');
+                tempInput.value = textToCopy;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    // Optional: Provide visual feedback that text was copied
+                    copyPasswordBtn.classList.add('fa-check'); // Change icon to a checkmark
+                    copyPasswordBtn.classList.remove('fa-copy');
+                    setTimeout(() => {
+                        copyPasswordBtn.classList.remove('fa-check');
+                        copyPasswordBtn.classList.add('fa-copy');
+                    }, 1500); // Revert icon after 1.5 seconds
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    // Fallback for older browsers or restricted environments
+                    alert('Could not copy password. Please copy it manually: ' + textToCopy);
+                } finally {
+                    document.body.removeChild(tempInput);
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

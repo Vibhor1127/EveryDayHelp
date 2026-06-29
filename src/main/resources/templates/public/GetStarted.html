@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - EveryDayHelp</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins & Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Define CSS Variables for easy color changes */
+        :root {
+            --color-primary: #8f94fb;
+            --color-secondary: #4e54c8;
+            --color-accent-admin: #ff8a00; /* Orange */
+            --color-accent-user: #00c6ff;  /* Blue */
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-color: #fff;
+            --shadow-dark: rgba(0, 0, 0, 0.45);
+        }
+
+        /* Global Background Animation */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(-45deg, #141e30, #243b55, #4e54c8, #8f94fb);
+            background-size: 400% 400%;
+            animation: bgAnim 18s ease infinite;
+            overflow: hidden; /* Prevent scrollbar from background animation */
+        }
+
+        @keyframes bgAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Main Container Styling */
+        .container-fluid {
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        /* Title Styling */
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 3.5rem;
+            text-shadow: 0 0 15px var(--shadow-dark), 0 0 5px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(90deg, var(--color-accent-admin), var(--color-accent-user));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            from { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px var(--color-accent-admin); }
+            to { text-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px var(--color-accent-user); }
+        }
+
+        /* Card Styling */
+        .card-wrapper {
+            perspective: 1000px; /* For 3D transform */
+        }
+
+        .login-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            backdrop-filter: blur(15px); /* Stronger blur for glass effect */
+            box-shadow: 0 15px 30px var(--shadow-dark);
+            padding: 2.5rem;
+            text-align: center;
+            transition: transform 0.5s ease-out, box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d; /* For child elements to preserve 3D */
+            animation: popUp 0.8s ease-out forwards; /* Initial pop-up animation */
+            opacity: 0; /* Start hidden for animation */
+            transform: translateY(50px) scale(0.8); /* Start smaller and lower */
+        }
+
+        /* Delay for the second card */
+        .login-card.user-card {
+            animation-delay: 0.2s;
+        }
+
+        @keyframes popUp {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Card Hover Effects */
+        .login-card:hover {
+            transform: translateY(-10px) scale(1.03) rotateX(3deg); /* Slight lift, scale, and tilt */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Card-specific accent colors and subtle border glow */
+        .admin-card {
+            border-left: 5px solid var(--color-accent-admin);
+            border-right: 5px solid var(--color-accent-admin);
+        }
+        .admin-card:hover {
+            border-color: var(--color-accent-admin);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px var(--color-accent-admin);
+        }
+
+        .user-card {
+            border-left: 5px solid var(--color-accent-user);
+            border-right: 5px solid var(--color-accent-user);
+        }
+        .user-card:hover {
+            border-color: var(--color-accent-user);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px var(--color-accent-user);
+        }
+
+        /* Icon Styling */
+        .login-card i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, var(--color-accent-admin), var(--color-accent-user));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .login-card:hover i {
+            transform: scale(1.1);
+        }
+
+        /* Text within cards */
+        .login-card h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            text-shadow: 0 0 8px var(--shadow-dark);
+        }
+
+        .login-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .login-card {
+                padding: 2rem;
+            }
+            .login-card i {
+                font-size: 3rem;
+            }
+            .login-card h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <h1>Welcome to EveryDayHelp</h1>
+
+    <div class="row justify-content-center g-4">
+        <!-- Admin Card -->
+        <div class="col-md-5 col-sm-8 card-wrapper">
+            <a th:href="@{/admin/adminLogin}" class="text-decoration-none">
+                <div class="login-card admin-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h2>Admin Login</h2>
+                    <p>Access the administrative dashboard to manage employees, users, notices, and contacts.</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- User Card -->
+        <div class="col-md-5 col-sm-8 card-wrapper">
+            <a th:href="@{/userLogin}" class="text-decoration-none">
+                <div class="login-card user-card">
+                    <i class="fas fa-users"></i>
+                    <h2>User Login</h2>
+                    <p>Log in as a user to access services and manage your requests.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

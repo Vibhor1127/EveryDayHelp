@@ -1,0 +1,77 @@
+<!-- NO <html>, NO <head>, NO <body> -->
+
+<style>
+    :root{
+      --accent-1:#ff6ec4;
+      --accent-2:#7873f5;
+      --navbar-bg: rgba(0, 0, 0, 0.4);
+      --navbar-blur: 10px;
+      --nav-link-color: #fff;
+      --nav-link-hover-underline: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      --brand-color: var(--accent-1);
+    }
+
+    .navbar.fixed-top{
+      z-index:1050;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .navbar{
+      background:var(--navbar-bg) !important;
+      backdrop-filter:blur(var(--navbar-blur));
+    }
+
+    .navbar-brand{
+      font-weight:800;
+      font-size:1.8rem;
+      color:#fff !important;
+    }
+
+    .navbar-brand span{
+      color:var(--brand-color);
+    }
+
+    .nav-link{
+      position:relative;
+      font-weight:600;
+      color:#fff !important;
+    }
+
+    .nav-link::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:-6px;
+      width:0;
+      height:3px;
+      background:var(--nav-link-hover-underline);
+      transition:width .4s ease-out;
+    }
+
+    .nav-link:hover::after{
+      width:100%;
+    }
+</style>
+
+<div th:fragment="headerFragment" class="container-fluid px-0">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">
+                EveryDay <span>Help</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/about}">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/contactUs}">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

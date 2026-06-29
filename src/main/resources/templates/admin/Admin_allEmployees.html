@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Employees - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(-45deg, #141e30, #243b55, #4e54c8, #8f94fb);
+            background-size: 400% 400%;
+            animation: bgAnim 18s ease infinite;
+            min-height: 100vh;
+            padding-top: 72px;
+        }
+
+        @keyframes bgAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Admin Navbar - Original Style */
+        .navbar {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.4) !important;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #fff !important;
+        }
+
+        .navbar-brand span {
+            color: #ff8a00;
+        }
+
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            color: #fff !important;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -4px;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff8a00, #9b00ff);
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .btn-logout {
+            background: linear-gradient(90deg, #ff4d4d, #ff0066);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            transform: scale(1.1);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff8a00, #9b00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Stats Card */
+        .stats-card {
+            background: linear-gradient(135deg, #ff8a00, #9b00ff);
+            padding: 1.5rem;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(255, 138, 0, 0.3);
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .stats-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Employee Cards Grid */
+        .employees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .employee-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff8a00, #9b00ff);
+        }
+
+        .employee-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .employee-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .employee-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff8a00, #9b00ff);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            box-shadow: 0 5px 15px rgba(255, 138, 0, 0.3);
+        }
+
+        .employee-id-badge {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .employee-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .employee-info-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .employee-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .employee-info-item i {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #ff8a00, #9b00ff);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .employee-info-item .label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 80px;
+        }
+
+        .employee-info-item .value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .employee-type-badge {
+            display: inline-block;
+            background: rgba(155, 0, 255, 0.1);
+            color: #9b00ff;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            font-weight: 700;
+            border: 2px solid #9b00ff;
+        }
+
+        .employee-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-edit {
+            flex: 1;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.5);
+            color: white;
+        }
+
+        .btn-delete {
+            flex: 1;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.5);
+            color: white;
+        }
+
+        /* Empty State */
+        .empty-state {
+            background: white;
+            padding: 5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .employees-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Admin Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/admin/adminHome}">
+                Admin&nbsp;<span>Panel</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#adminNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/addEmployee}">Add&nbsp;Employee</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/addNotice}">Add&nbsp;Notices</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allUsers}">View&nbsp;Users</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allEmployees}">View&nbsp;Employees</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allNotices}">View&nbsp;Notices</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/allContacts}">View&nbsp;Contacts</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/view-bookings}">View&nbsp;Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/admin/view-feedback}">View&nbsp;Feedback</a></li>
+                </ul>
+
+                <form th:action="@{/admin/adminLogout}" method="post" class="d-flex">
+                    <button type="submit" class="btn btn-logout">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-users-cog me-3"></i>All Employees
+        </h1>
+        <p>Manage your workforce and employee details</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-card text-center">
+                <h3 th:text="${#lists.size(employees)}">0</h3>
+                <p><i class="fas fa-users-cog me-2"></i>Total Employees</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employees Grid -->
+    <div class="employees-grid" th:if="${!#lists.isEmpty(employees)}">
+        <div class="employee-card" th:each="e, idx : ${employees}">
+            <div class="employee-card-header">
+                <div class="employee-number" th:text="${idx.index + 1}">1</div>
+                <div class="employee-id-badge" th:text="${e.employee_id}">EMP-001</div>
+            </div>
+
+            <div class="employee-info">
+                <div class="employee-info-item">
+                    <i class="fas fa-user"></i>
+                    <div class="label">Name</div>
+                    <div class="value" th:text="${e.name}">John Doe</div>
+                </div>
+
+                <div class="employee-info-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="label">Phone</div>
+                    <div class="value" th:text="${e.phone}">9876543210</div>
+                </div>
+
+                <div class="employee-info-item">
+                    <i class="fas fa-briefcase"></i>
+                    <div class="label">Type</div>
+                    <div class="value">
+                        <span class="employee-type-badge" th:text="${e.employee_type}">Plumber</span>
+                    </div>
+                </div>
+
+                <div class="employee-info-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <div class="label">Charges</div>
+                    <div class="value" th:text="${e.charges}">₹500/day</div>
+                </div>
+            </div>
+
+            <div class="employee-actions">
+                <a th:href="@{'/admin/editEmployee'(id=${e.employee_id})}"
+                   class="btn btn-edit"
+                   onclick="return confirm('Edit this employee?');">
+                    <i class="fas fa-edit me-2"></i>Edit
+                </a>
+                <a th:href="@{'/admin/deleteEmployee'(id=${e.employee_id})}"
+                   class="btn btn-delete"
+                   onclick="return confirm('Delete this employee?');">
+                    <i class="fas fa-trash me-2"></i>Delete
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${#lists.isEmpty(employees)}">
+        <i class="fas fa-users-slash"></i>
+        <h3>No Employees Found</h3>
+        <p>There are no employees registered in the system yet.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

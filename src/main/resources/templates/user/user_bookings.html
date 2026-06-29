@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Service - EveryDayHelp</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            background: #000;
+        }
+
+        /* Galaxy Background */
+        .galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        /* Stars Animation */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #fff, transparent);
+            animation: shoot 3s linear infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-1000px) translateY(500px);
+                opacity: 0;
+            }
+        }
+
+        /* Nebula Effect */
+        .nebula {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .nebula-1 {
+            background: radial-gradient(circle, #4a00e0, transparent);
+            top: 10%;
+            left: 20%;
+        }
+
+        .nebula-2 {
+            background: radial-gradient(circle, #8e2de2, transparent);
+            top: 60%;
+            right: 15%;
+            animation-delay: -10s;
+        }
+
+        .nebula-3 {
+            background: radial-gradient(circle, #00d4ff, transparent);
+            bottom: 20%;
+            left: 40%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Content Container */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* Booking Card */
+        .booking-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        0 0 100px rgba(138, 43, 226, 0.2);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Title */
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: brightness(1); }
+            to { filter: brightness(1.3); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+
+        /* Form Elements */
+        .form-label {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-label i {
+            color: #667eea;
+        }
+
+        .form-select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.9rem 1.2rem;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-select:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+            color: #fff;
+            outline: none;
+        }
+
+        .form-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        /* Radio Buttons */
+        .duration-options {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .radio-card {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: block;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .radio-card input[type="radio"]:checked + .radio-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .radio-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .radio-desc {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        /* Price Display */
+        .price-display {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border: 2px solid rgba(102, 126, 234, 0.4);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 1.5rem 0;
+        }
+
+        .price-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-amount {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+        }
+
+        /* Book Button */
+        .btn-book {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: #fff;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .btn-book:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-book:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .btn-book:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-book::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-book:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-book span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Thank You Modal */
+        .thank-you-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thank-you-modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .thank-you-content {
+            text-align: center;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .check-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 50px rgba(102, 126, 234, 0.8);
+        }
+
+        .check-icon i {
+            font-size: 3rem;
+            color: #fff;
+        }
+
+        .thank-you-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .thank-you-message {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+
+        .redirect-message {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+<!-- Galaxy Background -->
+<div class="galaxy-bg">
+    <div class="stars" id="stars"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
+</div>
+
+<!-- Content -->
+<div class="content-wrapper">
+    <div class="booking-card">
+        <h1 class="title">BOOK YOUR SERVICE</h1>
+        <p class="subtitle">Choose your service and duration</p>
+
+        <form th:action="@{/bookService}" method="post" id="bookingForm">
+            <!-- Service Selection -->
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="fas fa-cog"></i>
+                    Select Service
+                </label>
+                <select class="form-select" id="serviceSelect" name="serviceType" required>
+                    <option value="">Choose a service...</option>
+                    <option value="House Cleaning" data-lts="2500" data-sts="800">House Cleaning</option>
+                    <option value="Plumbing" data-lts="3000" data-sts="1000">Plumbing</option>
+                    <option value="Electrical Work" data-lts="3500" data-sts="1200">Electrical Work</option>
+                    <option value="Gardening" data-lts="2000" data-sts="600">Gardening</option>
+                    <option value="Pest Control" data-lts="4000" data-sts="1500">Pest Control</option>
+                    <option value="AC Repair" data-lts="3500" data-sts="1300">AC Repair</option>
+                    <option value="Painting" data-lts="5000" data-sts="2000">Painting</option>
+                    <option value="Carpentry" data-lts="3000" data-sts="1100">Carpentry</option>
+                </select>
+            </div>
+
+            <!-- Duration Selection -->
+            <div class="mb-4">
+                <label class="form-label">
+                    <i class="fas fa-clock"></i>
+                    Duration
+                </label>
+                <div class="duration-options">
+                    <div class="radio-card">
+                        <input type="radio" name="duration" id="lts" value="LTS" required>
+                        <label for="lts" class="radio-label">
+                            <div class="radio-title">LTS</div>
+                            <div class="radio-desc">Long Term Service</div>
+                        </label>
+                    </div>
+                    <div class="radio-card">
+                        <input type="radio" name="duration" id="sts" value="STS" required>
+                        <label for="sts" class="radio-label">
+                            <div class="radio-title">STS</div>
+                            <div class="radio-desc">Short Term Service</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden Amount Field -->
+            <input type="hidden" id="amountField" name="amount" value="0">
+
+            <!-- Price Display -->
+            <div class="price-display">
+                <div class="price-label">Service Amount</div>
+                <div class="price-amount" id="priceAmount">₹0</div>
+            </div>
+
+            <!-- Book Button -->
+            <button type="submit" class="btn-book" id="bookBtn" disabled>
+                <span><i class="fas fa-rocket me-2"></i>BOOK NOW</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Thank You Modal -->
+<div class="thank-you-modal" id="thankYouModal">
+    <div class="thank-you-content">
+        <div class="check-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <h2 class="thank-you-title">THANK YOU!</h2>
+        <p class="thank-you-message">Your service has been booked successfully</p>
+        <p class="redirect-message">Redirecting to home page...</p>
+    </div>
+</div>
+
+<script>
+    // Generate Stars
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 200; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(star);
+    }
+
+    // Generate Shooting Stars
+    setInterval(() => {
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        shootingStar.style.width = Math.random() * 100 + 50 + 'px';
+        shootingStar.style.left = Math.random() * 100 + '%';
+        shootingStar.style.top = Math.random() * 50 + '%';
+        starsContainer.appendChild(shootingStar);
+
+        setTimeout(() => shootingStar.remove(), 3000);
+    }, 3000);
+
+    // Booking Form Logic
+    const serviceSelect = document.getElementById('serviceSelect');
+    const priceAmount = document.getElementById('priceAmount');
+    const amountField = document.getElementById('amountField');
+    const bookBtn = document.getElementById('bookBtn');
+    const bookingForm = document.getElementById('bookingForm');
+
+    function updatePrice() {
+        const selectedService = serviceSelect.options[serviceSelect.selectedIndex];
+        const selectedDuration = document.querySelector('input[name="duration"]:checked');
+
+        if (selectedService.value && selectedDuration) {
+            const price = selectedDuration.value === 'LTS'
+                ? selectedService.getAttribute('data-lts')
+                : selectedService.getAttribute('data-sts');
+
+            priceAmount.textContent = '₹' + price;
+            amountField.value = price;
+            bookBtn.disabled = false;
+        } else {
+            priceAmount.textContent = '₹0';
+            amountField.value = 0;
+            bookBtn.disabled = true;
+        }
+    }
+
+    serviceSelect.addEventListener('change', updatePrice);
+    document.querySelectorAll('input[name="duration"]').forEach(radio => {
+        radio.addEventListener('change', updatePrice);
+    });
+</script>
+</body>
+</html>
