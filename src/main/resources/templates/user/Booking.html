@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Booking Service</title>
-<!--  <th:block th:replace="~{/fragments/commonCSS::commonCSS1}"></th:block>-->
+<!--  <th:block th:replace="~{fragments/commonCSS::commonCSS1}"></th:block>-->
   <style>
     body {
         display: flex;
@@ -83,7 +83,7 @@
         transform: translateY(-2px); /* Slight lift effect */
     }
 
-    /* Styling for the footer - ensure this matches your actual footer fragment */
+    /* Styling for the footer */
     .footer {
         background-color: #333; /* Dark background */
         color: white;
@@ -95,7 +95,7 @@
   </style>
 </head>
 <body>
-<!--<th:block th:replace="~{/fragments/user_header::userheaderFragment}"></th:block>-->
+<!--<th:block th:replace="~{fragments/user_header::userheaderFragment}"></th:block>-->
 
 <div class="main-content">
   <div class="card-box">
@@ -129,7 +129,7 @@
   </div>
 </div>
 
-<div th:replace="~{/fragments/footer::footerFragment}"></div>
+<div th:replace="~{fragments/footer::footerFragment}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
