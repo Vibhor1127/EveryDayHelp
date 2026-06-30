@@ -455,48 +455,46 @@
         const copyPasswordBtn = document.getElementById('copyPasswordBtn');
         const loadingSpinner = document.getElementById('loadingSpinner');
 
-        generatePasswordBtn.addEventListener('click', async () => {
+        generatePasswordBtn.addEventListener('click', () => {
             passwordSuggestionBox.style.display = 'flex';
             passwordSuggestionBox.classList.remove('show');
             generatedPasswordText.textContent = '';
             loadingSpinner.style.display = 'block';
-            copyPasswordBtn.style.display = 'none'; // Hide copy button during loading
+            copyPasswordBtn.style.display = 'none';
 
-            const prompt = "Generate a strong, random password that is at least 12 characters long, includes uppercase and lowercase letters, numbers, and special characters. Do not include any introductory or concluding text, just the password itself.";
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-
-            const apiKey = ""; // Canvas will automatically provide the API key at runtime.
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const generatedPass = result.candidates[0].content.parts[0].text.trim();
-                    generatedPasswordText.textContent = generatedPass;
-                    passwordInput.value = generatedPass; // Auto-fill the password input
-                    copyPasswordBtn.style.display = 'inline-block'; // Show copy button
-                    passwordSuggestionBox.classList.add('show'); // Animate in
-                } else {
-                    generatedPasswordText.textContent = "Error generating password. Please try again.";
-                    console.error("Gemini API response structure unexpected:", result);
-                }
-            } catch (error) {
-                generatedPasswordText.textContent = "Failed to generate password.";
-                console.error("Error calling Gemini API:", error);
-            } finally {
+            // Generate password locally - no API needed
+            setTimeout(() => {
+                const generatedPass = generateStrongPassword(16);
+                generatedPasswordText.textContent = generatedPass;
+                passwordInput.value = generatedPass;
+                copyPasswordBtn.style.display = 'inline-block';
+                passwordSuggestionBox.classList.add('show');
                 loadingSpinner.style.display = 'none';
-            }
+            }, 300); // Small delay for visual feedback
         });
+
+        function generateStrongPassword(length) {
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const numbers = '0123456789';
+            const special = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const allChars = uppercase + lowercase + numbers + special;
+
+            // Ensure at least one of each type
+            let password = '';
+            password += uppercase[Math.floor(Math.random() * uppercase.length)];
+            password += lowercase[Math.floor(Math.random() * lowercase.length)];
+            password += numbers[Math.floor(Math.random() * numbers.length)];
+            password += special[Math.floor(Math.random() * special.length)];
+
+            // Fill the rest randomly
+            for (let i = 4; i < length; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+
+            // Shuffle the password so the guaranteed chars aren't always at the start
+            return password.split('').sort(() => Math.random() - 0.5).join('');
+        }
 
         copyPasswordBtn.addEventListener('click', () => {
             const textToCopy = generatedPasswordText.textContent;
