@@ -72,19 +72,16 @@ public class PublicService
                 System.out.println("Created upload folder at : " + uploadDir.getAbsolutePath());
             }
 
-            String DB_PATH = "";
-            if (file != null && !file.isEmpty()) {
-                String originalFilename = file.getOriginalFilename();
-                System.out.println("File name is " + originalFilename);
+            String originalFilename = file.getOriginalFilename();
+            System.out.println("File name is " + originalFilename);
 
-                String uniquefileName = System.currentTimeMillis() + " __ " + originalFilename;
-                File destinationFile = new File(uploadDir, uniquefileName);
+            String uniquefileName = System.currentTimeMillis() + " __ " + originalFilename;
+            File destinationFile = new File(uploadDir, uniquefileName);
 
-                file.transferTo(destinationFile);
-                System.out.println("Images saved to : " + destinationFile.getAbsolutePath());
+            file.transferTo(destinationFile);
+            System.out.println("Images saved to : " + destinationFile.getAbsolutePath());
 
-                DB_PATH = foldername +"/" + uniquefileName;
-            }
+            String DB_PATH = foldername +"/" + uniquefileName;
             userDetails.setPic(DB_PATH);
 
             String encryptedPassword = passwordEncoder.encode(userDetails.getPassword());

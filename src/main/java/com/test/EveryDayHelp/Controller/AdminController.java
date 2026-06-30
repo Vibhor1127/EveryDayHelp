@@ -32,7 +32,7 @@ public class AdminController
         if (isAdminLoggedIn(session)) {
             return "redirect:/admin/adminHome";
         }
-        return "admin/admin_login";
+        return "admin/Admin_login";
     }
 
     @GetMapping("/addEmployee")
@@ -42,7 +42,7 @@ public class AdminController
             rd.addFlashAttribute("msg", "Unauthorized Access, Please Login First");
             return "redirect:/admin/adminLogin";
         }
-        return "admin/add_employee";
+        return "admin/Add_employee";
     }
 
     @PostMapping("/addEmployee")
@@ -69,7 +69,7 @@ public class AdminController
 
         AdminNotice notice = new AdminNotice();
         model.addAttribute("noticeObj", notice);
-        return "admin/admin_notice";
+        return "admin/Admin_notice";
     }
 
     @PostMapping("postNotice")
@@ -147,7 +147,7 @@ public class AdminController
 
         Admin admin = (Admin)session.getAttribute("adminKey");
         model.addAttribute("adminInfo", admin);
-        return "admin/admin_home";
+        return "admin/Admin_home";
     }
 
     @PostMapping("adminLogin")
@@ -164,7 +164,7 @@ public class AdminController
         if (admin != null) {
             session.setAttribute("adminKey", admin);
             model.addAttribute("adminInfo", admin);
-            return "admin/admin_home";
+            return "admin/Admin_home";
         }
 
         rd.addFlashAttribute("msg", "Invalid Email / Password");

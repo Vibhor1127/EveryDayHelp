@@ -73,7 +73,7 @@
 <body>
 
 <!-- Optional: Admin Header -->
-<!--<div th:replace="~{fragments/admin_navbar::adminNav}"></div>-->
+<!--<div th:replace="~{/fragments/admin_navbar::adminNav}"></div>-->
 
 <div class="container col-md-6">
   <div class="form-glass">
@@ -91,6 +91,8 @@
         <label for="phone">Phone</label>
         <input type="number" th:field="*{phone}" id="phone" class="form-control" placeholder="Enter phone number" required>
       </div>
+
+
 
       <div class="mb-3">
         <label for="address">Address</label>

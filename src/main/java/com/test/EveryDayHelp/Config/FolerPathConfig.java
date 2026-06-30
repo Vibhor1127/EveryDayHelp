@@ -2,11 +2,10 @@ package com.test.EveryDayHelp.Config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -39,16 +38,6 @@ public class FolerPathConfig implements WebMvcConfigurer { //We need to implemen
                 response.setDateHeader("Expires", 0);
                 return true;
             }
-        }).addPathPatterns(
-                "/admin/**",
-                "/admin/adminLogin",
-                "/userHome",
-                "/bookService",
-                "/feedback",
-                "/AllServices",
-                "/FeedBack",
-                "/UserRegistration",
-                "/userLogin"
-        );
+        }).addPathPatterns("/admin/**", "/userHome", "/bookService", "/feedback", "/AllServices", "/FeedBack");
     }
 }
