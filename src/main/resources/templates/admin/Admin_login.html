@@ -270,6 +270,14 @@
           particle.style.animationDelay = `${Math.random() * 20}s`; // 0s to 20s delay
           particle.style.animationDuration = `${Math.random() * 15 + 15}s`; // 15s to 30s duration
       }
+
+      // Intercept back button to redirect to home page "/" instead of getting stuck
+      if (window.history && window.history.pushState) {
+          window.history.pushState('forward', null, '');
+          window.addEventListener('popstate', function () {
+              window.location.href = '/';
+          });
+      }
   });
 </script>
 </body>

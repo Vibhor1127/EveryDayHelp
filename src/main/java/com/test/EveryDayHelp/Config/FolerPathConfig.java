@@ -2,8 +2,13 @@ package com.test.EveryDayHelp.Config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration //Simply it means doing thing explicitly other then implicitly
 public class FolerPathConfig implements WebMvcConfigurer { //We need to implement the WebMvc by adding Config
@@ -22,8 +27,28 @@ public class FolerPathConfig implements WebMvcConfigurer { //We need to implemen
         
 //        registry.addResourceHandler("/uploadFiles/**")
 //        .addResourceLocations("file:"+uploadDir+"/");
+    }
 
-
-       
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new HandlerInterceptor() {
+            @Override
+            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+                response.setHeader("Pragma", "no-cache");
+                response.setDateHeader("Expires", 0);
+                return true;
+            }
+        }).addPathPatterns(
+                "/admin/**",
+                "/admin/adminLogin",
+                "/userHome",
+                "/bookService",
+                "/feedback",
+                "/AllServices",
+                "/FeedBack",
+                "/UserRegistration",
+                "/userLogin"
+        );
     }
 }
