@@ -42,7 +42,7 @@ public class PublicController {
 
     @GetMapping("/getstarted")
     public String showGetStartedPage() {
-        return "/public/GetStarted";
+        return "public/GetStarted";
     }
 
     @GetMapping("/bookService")
