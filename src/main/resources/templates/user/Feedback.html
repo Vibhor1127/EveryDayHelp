@@ -10,39 +10,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- SweetAlert2 for flash messages -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         /* CSS Variables for consistent theming */
         :root {
-            /* Background Gradient Colors (Liquid Aurora inspired) */
-            --bg-main-start: #0a1930;   /* Very Dark Blue */
-            --bg-main-mid: #1b2e4a;     /* Darker Blue */
-            --bg-main-end: #2d4262;     /* Medium Blue */
-
-            /* Colors for the flowing aurora effect */
-            --aurora-color1: rgba(70, 130, 180, 0.4); /* SteelBlue, semi-transparent */
-            --aurora-color2: rgba(138, 43, 226, 0.3); /* BlueViolet, semi-transparent */
-            --aurora-color3: rgba(0, 206, 209, 0.3);  /* DarkTurquoise, semi-transparent */
-
+            --bg-main-start: #0a1930;
+            --bg-main-mid: #1b2e4a;
+            --bg-main-end: #2d4262;
+            --aurora-color1: rgba(70, 130, 180, 0.4);
+            --aurora-color2: rgba(138, 43, 226, 0.3);
+            --aurora-color3: rgba(0, 206, 209, 0.3);
             --card-glass-bg: rgba(255, 255, 255, 0.08);
             --card-glass-border: rgba(255, 255, 255, 0.15);
             --text-color: #fff;
             --shadow-color: rgba(0, 0, 0, 0.5);
-
             --input-bg: rgba(255, 255, 255, 0.1);
             --input-border: rgba(255, 255, 255, 0.3);
             --input-focus-glow: #00f2ff;
-
-            --button-gradient-start: #ff6ec4; /* Pink */
-            --button-gradient-mid1: #7873f5;   /* Purple */
-            --button-gradient-mid2: #00c6ff;   /* Light Blue */
-            --button-gradient-end: #0072ff;    /* Dark Blue */
-
-            --star-color-active: #FFD700; /* Gold */
+            --button-gradient-start: #ff6ec4;
+            --button-gradient-mid1: #7873f5;
+            --button-gradient-mid2: #00c6ff;
+            --button-gradient-end: #0072ff;
+            --star-color-active: #FFD700;
             --star-color-inactive: rgba(255, 255, 255, 0.3);
         }
 
-        /* Global Body & Background Animation */
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -55,8 +49,8 @@
             background: linear-gradient(135deg, var(--bg-main-start), var(--bg-main-mid), var(--bg-main-end));
             background-size: 300% 300%;
             animation: bgGradientShift 25s ease infinite alternate;
-            overflow: hidden; /* Crucial for background effects */
-            position: relative; /* For pseudo-elements */
+            overflow: hidden;
+            position: relative;
         }
 
         @keyframes bgGradientShift {
@@ -65,24 +59,21 @@
             100% { background-position: 0% 0%; }
         }
 
-        /* Unique "Liquid Aurora" Background Effect */
         body::before, body::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 0; /* Behind the main content */
-            mix-blend-mode: screen; /* Blends colors beautifully */
+            z-index: 0;
+            mix-blend-mode: screen;
         }
 
         body::before {
             background:
                 radial-gradient(circle at 20% 70%, var(--aurora-color1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 30%, var(--aurora-color2) 0%, transparent 50%);
-            background-size: 150% 150%; /* Larger for softer blend */
+            background-size: 150% 150%;
             animation: auroraFlow1 30s linear infinite alternate;
         }
 
@@ -90,7 +81,7 @@
             background:
                 radial-gradient(circle at 70% 10%, var(--aurora-color3) 0%, transparent 60%),
                 radial-gradient(circle at 30% 90%, var(--aurora-color1) 0%, transparent 60%);
-            background-size: 180% 180%; /* Even larger for more subtle movement */
+            background-size: 180% 180%;
             animation: auroraFlow2 40s linear infinite;
         }
 
@@ -104,16 +95,14 @@
             100% { background-position: 0% 100%; transform: scale(1); }
         }
 
-        /* Main Container for Form */
         .container {
             padding: 2rem 1rem;
-            max-width: 600px; /* Max width for the form card */
+            max-width: 600px;
             width: 100%;
-            z-index: 1; /* Ensure content is above background */
+            z-index: 1;
             position: relative;
         }
 
-        /* Page Title */
         h1 {
             font-family: 'Montserrat', sans-serif;
             font-weight: 800;
@@ -132,7 +121,6 @@
             to { text-shadow: 0 0 15px rgba(255, 255, 255, 0.7), 0 0 30px var(--button-gradient-end); }
         }
 
-        /* Card Styling */
         .card-glass {
             background: var(--card-glass-bg);
             border: 1px solid var(--card-glass-border);
@@ -140,8 +128,8 @@
             backdrop-filter: blur(15px);
             box-shadow: 0 15px 30px var(--shadow-color);
             padding: 2.5rem;
-            text-align: left; /* Align form content to left */
-            opacity: 0; /* Start hidden for pop-up animation */
+            text-align: left;
+            opacity: 0;
             transform: translateY(50px) scale(0.9);
             animation: popUp 0.8s ease-out forwards;
         }
@@ -150,15 +138,13 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Form Labels */
         .form-label {
             font-weight: 600;
             color: rgba(255, 255, 255, 0.9);
             margin-bottom: 0.5rem;
-            display: block; /* Ensure labels take full width */
+            display: block;
         }
 
-        /* Form Inputs & Textarea */
         .form-control {
             background: var(--input-bg);
             border: 1px solid var(--input-border);
@@ -181,25 +167,7 @@
 
         textarea.form-control {
             resize: vertical;
-            min-height: 100px; /* Taller remark box */
-        }
-
-        /* Star Rating */
-        .star-rating {
-            display: inline-block;
-            font-size: 2.5rem; /* Larger stars */
-            color: var(--star-color-inactive);
-            cursor: pointer;
-            transition: color 0.2s ease, transform 0.2s ease;
-            margin: 0 5px; /* Space between stars */
-        }
-
-        .star-rating .fas {
-            color: var(--star-color-active);
-        }
-
-        .star-rating:hover {
-            transform: scale(1.1);
+            min-height: 100px;
         }
 
         .star-rating-container {
@@ -208,7 +176,23 @@
             margin-bottom: 2rem;
         }
 
-        /* Submit Button */
+        .star-rating-container .star {
+            display: inline-block;
+            font-size: 2.5rem;
+            color: var(--star-color-inactive);
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+            margin: 0 5px;
+        }
+
+        .star-rating-container .star.fas {
+            color: var(--star-color-active);
+        }
+
+        .star-rating-container .star:hover {
+            transform: scale(1.2);
+        }
+
         .btn-submit {
             background: linear-gradient(90deg, var(--button-gradient-start), var(--button-gradient-end));
             background-size: 200% 200%;
@@ -239,57 +223,63 @@
             opacity: 0.9;
         }
 
-        /* Responsive Adjustments */
+        .btn-home {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.7rem 1.8rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-home:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-                margin-bottom: 2rem;
-            }
-            .card-glass {
-                padding: 1.5rem;
-            }
-            .star-rating {
-                font-size: 2rem;
-                margin: 0 3px;
-            }
-            .btn-submit {
-                font-size: 1rem;
-                padding: 0.7rem 1.8rem;
-            }
+            h1 { font-size: 2.5rem; margin-bottom: 2rem; }
+            .card-glass { padding: 1.5rem; }
+            .star-rating-container .star { font-size: 2rem; margin: 0 3px; }
+            .btn-submit { font-size: 1rem; padding: 0.7rem 1.8rem; }
         }
 
         @media (max-width: 576px) {
-            .container {
-                padding: 0.5rem;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .card-glass {
-                padding: 1rem;
-            }
-            .star-rating {
-                font-size: 1.8rem;
-            }
+            .container { padding: 0.5rem; }
+            h1 { font-size: 2rem; }
+            .card-glass { padding: 1rem; }
+            .star-rating-container .star { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
+<!-- Flash message bridge for SweetAlert -->
+<p id="flash" th:text="${msg}" hidden></p>
+
 <div class="container">
     <h1>Share Your Feedback <i class="fas fa-comment-dots"></i></h1>
 
     <div class="card-glass mx-auto">
-        <form id="feedbackForm">
+        <form id="feedbackForm" th:action="@{/submitFeedback}" method="post">
             <div class="mb-4">
                 <label for="userEmail" class="form-label"><i class="fas fa-at"></i> Your Email</label>
-                <!-- Read-only email input -->
-                <input type="email" class="form-control" id="userEmail" value="user@example.com" readonly aria-label="User Email (read-only)">
+                <input type="email" class="form-control" id="userEmail" name="email"
+                       th:value="${session.UserKey != null ? session.UserKey.email : ''}"
+                       readonly aria-label="User Email (read-only)">
             </div>
 
             <div class="mb-4">
                 <label for="userName" class="form-label"><i class="fas fa-user"></i> Your Name</label>
-                <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter your name" required>
+                <input type="text" class="form-control" id="userName" name="name"
+                       th:value="${session.UserKey != null ? session.UserKey.name : ''}"
+                       placeholder="Enter your name" required>
             </div>
 
             <div class="mb-4">
@@ -300,19 +290,26 @@
                     <i class="far fa-star star" data-value="3"></i>
                     <i class="far fa-star star" data-value="4"></i>
                     <i class="far fa-star star" data-value="5"></i>
-                    <input type="hidden" name="rating" id="ratingInput" value="0" required>
+                    <input type="hidden" name="rating" id="ratingInput" value="0">
                 </div>
             </div>
 
             <div class="mb-4">
-                <label for="remark" class="form-label"><i class="fas fa-pencil-alt"></i> Remarks</label>
-                <textarea class="form-control" id="remark" name="remark" rows="4" placeholder="Share your thoughts and suggestions here..."></textarea>
+                <label for="remarks" class="form-label"><i class="fas fa-pencil-alt"></i> Remarks</label>
+                <textarea class="form-control" id="remarks" name="remarks" rows="4"
+                          placeholder="Share your thoughts and suggestions here..."></textarea>
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-submit">
+                <button type="submit" class="btn btn-submit" id="submitBtn">
                     Submit Feedback <i class="fas fa-paper-plane"></i>
                 </button>
+            </div>
+
+            <div class="text-center mt-3">
+                <a th:href="@{/userHome}" class="btn-home">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
             </div>
         </form>
     </div>
@@ -339,81 +336,63 @@
             });
         }
 
-        // Handle hover effect
         starRatingContainer.addEventListener('mouseover', (event) => {
             const hoveredStar = event.target.closest('.star');
             if (hoveredStar) {
-                const value = parseInt(hoveredStar.dataset.value);
-                updateStars(value);
+                updateStars(parseInt(hoveredStar.dataset.value));
             }
         });
 
-        // Revert to selected rating when mouse leaves
         starRatingContainer.addEventListener('mouseout', () => {
             updateStars(currentRating);
         });
 
-        // Handle click to set rating
         starRatingContainer.addEventListener('click', (event) => {
             const clickedStar = event.target.closest('.star');
             if (clickedStar) {
                 currentRating = parseInt(clickedStar.dataset.value);
-                ratingInput.value = currentRating; // Update hidden input
+                ratingInput.value = currentRating;
                 updateStars(currentRating);
             }
         });
 
-        // Form submission (placeholder)
+        // Client-side validation before submit
         const feedbackForm = document.getElementById('feedbackForm');
         feedbackForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent default form submission
-
-            const email = document.getElementById('userEmail').value;
+            if (ratingInput.value === '0') {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'Please provide a star rating before submitting.',
+                    icon: 'warning',
+                    confirmButtonColor: '#7873f5'
+                });
+                return;
+            }
             const name = document.getElementById('userName').value;
-            const rating = ratingInput.value;
-            const remark = document.getElementById('remark').value;
-
-            if (rating === '0') {
-                alert('Please provide a star rating.');
-                return;
-            }
             if (!name.trim()) {
-                alert('Please enter your name.');
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Oops!',
+                    text: 'Please enter your name.',
+                    icon: 'warning',
+                    confirmButtonColor: '#7873f5'
+                });
                 return;
             }
-
-            console.log('Feedback Submitted:', { email, name, rating, remark });
-            alert('Thank you for your feedback!'); // Replace with actual success message/redirect
-
-            // Here you would typically send this data to your Spring Boot backend
-            // using a fetch() API call, similar to the AllServices page.
-            // Example (uncomment and adapt for your backend endpoint):
-            /*
-            const formData = new URLSearchParams();
-            formData.append('email', email);
-            formData.append('name', name);
-            formData.append('rating', rating);
-            formData.append('remark', remark);
-
-            fetch('/api/submitFeedback', { // Define this endpoint in your Spring Controller
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: formData.toString(),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Backend response:', data);
-                alert('Feedback submitted successfully!');
-                // Optionally clear form or redirect
-            })
-            .catch(error => {
-                console.error('Error submitting feedback:', error);
-                alert('Failed to submit feedback. Please try again.');
-            });
-            */
+            // If validation passes, the form submits normally to the server
         });
+
+        // Show SweetAlert on flash message
+        const msg = document.getElementById('flash').textContent;
+        if (msg) {
+            Swal.fire({
+                title: 'Success!',
+                text: msg,
+                icon: 'success',
+                confirmButtonColor: '#3085d6'
+            });
+        }
     });
 </script>
 </body>

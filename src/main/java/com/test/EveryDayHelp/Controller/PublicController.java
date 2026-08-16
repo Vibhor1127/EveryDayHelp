@@ -63,6 +63,28 @@ public class PublicController {
         return "user/Feedback";
     }
 
+    @PostMapping("/submitFeedback")
+    public String submitFeedback(HttpSession session,
+                                 @RequestParam String email,
+                                 @RequestParam String name,
+                                 @RequestParam Integer rating,
+                                 @RequestParam String remarks,
+                                 RedirectAttributes rda) {
+        if (!isUserLoggedIn(session)) {
+            rda.addFlashAttribute("msg", "Please login to provide feedback");
+            return "redirect:/userLogin";
+        }
+        Feedback feedback = new Feedback();
+        feedback.setEmail(email);
+        feedback.setName(name);
+        feedback.setRating(rating);
+        feedback.setRemarks(remarks);
+        publicService.addFeedback(feedback);
+        rda.addFlashAttribute("msg", "Thank you for your feedback!");
+        return "redirect:/feedback";
+    }
+
+
     // Keep old mappings for backward compatibility
     @GetMapping("/AllServices")
     public String showAllServicesPage(HttpSession session, RedirectAttributes rd) {
